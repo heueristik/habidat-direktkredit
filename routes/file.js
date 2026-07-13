@@ -47,7 +47,7 @@ module.exports = function (app) {
         .findByPk(req.params.id)
         .then((file) => {
           if (!file) {
-            res.send(404);
+            res.sendStatus(404);
           } else if (
             file.ref_table.startsWith("infopack_") ||
             file.ref_table.startsWith("balance_") ||
@@ -67,7 +67,7 @@ module.exports = function (app) {
             res.write(fileData, "binary");
             res.end();
           } else {
-            res.send(404);
+            res.sendStatus(404);
           }
         })
         .catch((error) => next(error));
