@@ -86,28 +86,28 @@ $(document).ready(function () {
                 data: Object.values(data.deposits),
                 borderColor: dynamicColors(),
                 label: "Einzahlungen",
-                steppedLine: false,
+                stepped: false,
                 fill: false,
               },
               {
                 data: Object.values(data.withdrawals),
                 borderColor: dynamicColors(),
                 label: "Rückzahlungen",
-                steppedLine: false,
+                stepped: false,
                 fill: false,
               },
               {
                 data: Object.values(data.notReclaimed),
                 borderColor: dynamicColors(),
                 label: "Nicht Rückgefordert",
-                steppedLine: false,
+                stepped: false,
                 fill: false,
               },
               {
                 data: Object.values(data.interest),
                 borderColor: dynamicColors(),
                 label: "Zinsen",
-                steppedLine: false,
+                stepped: false,
                 fill: false,
               },
             ],
@@ -115,33 +115,29 @@ $(document).ready(function () {
           },
           options: {
             responsive: true,
-            title: {
-              display: false,
-              text: range.months + " Monate",
+            plugins: {
+              title: {
+                display: false,
+                text: range.months + " Monate",
+              },
             },
             scales: {
-              xAxes: [
-                {
+              x: {
+                display: true,
+                title: {
                   display: true,
-                  scaleLabel: {
-                    display: true,
-                    labelString: "Monat",
-                  },
+                  text: "Monat",
                 },
-              ],
-              yAxes: [
-                {
+              },
+              y: {
+                display: true,
+                suggestedMin: 0,
+                suggestedMax: max * 1.05,
+                title: {
                   display: true,
-                  ticks: {
-                    suggestedMin: 0,
-                    suggestedMax: max * 1.05,
-                  },
-                  scaleLabel: {
-                    display: true,
-                    labelString: "Transaktionen",
-                  },
+                  text: "Transaktionen",
                 },
-              ],
+              },
             },
           },
         });
@@ -177,33 +173,29 @@ $(document).ready(function () {
           },
           options: {
             responsive: true,
-            title: {
-              display: false,
-              text: "Kredite pro Kredithöhe (aufgerundet auf 1.000€)",
+            plugins: {
+              title: {
+                display: false,
+                text: "Kredite pro Kredithöhe (aufgerundet auf 1.000€)",
+              },
             },
             scales: {
-              xAxes: [
-                {
+              x: {
+                display: true,
+                title: {
                   display: true,
-                  scaleLabel: {
-                    display: true,
-                    labelString: "Kredithöhe",
-                  },
+                  text: "Kredithöhe",
                 },
-              ],
-              yAxes: [
-                {
+              },
+              y: {
+                display: true,
+                suggestedMin: 0,
+                suggestedMax: max * 1.05,
+                title: {
                   display: true,
-                  ticks: {
-                    suggestedMin: 0,
-                    suggestedMax: max * 1.05,
-                  },
-                  scaleLabel: {
-                    display: true,
-                    labelString: "Kredite",
-                  },
+                  text: "Kredite",
                 },
-              ],
+              },
             },
           },
         });
@@ -239,33 +231,29 @@ $(document).ready(function () {
           },
           options: {
             responsive: true,
-            title: {
-              display: false,
-              text: "Kreditesumme pro Kredithöhe",
+            plugins: {
+              title: {
+                display: false,
+                text: "Kreditesumme pro Kredithöhe",
+              },
             },
             scales: {
-              xAxes: [
-                {
+              x: {
+                display: true,
+                title: {
                   display: true,
-                  scaleLabel: {
-                    display: true,
-                    labelString: "Kredithöhe",
-                  },
+                  text: "Kredithöhe",
                 },
-              ],
-              yAxes: [
-                {
+              },
+              y: {
+                display: true,
+                suggestedMin: 0,
+                suggestedMax: max * 1.05,
+                title: {
                   display: true,
-                  ticks: {
-                    suggestedMin: 0,
-                    suggestedMax: max * 1.05,
-                  },
-                  scaleLabel: {
-                    display: true,
-                    labelString: "Kreditsumme",
-                  },
+                  text: "Kreditsumme",
                 },
-              ],
+              },
             },
           },
         });
@@ -302,33 +290,29 @@ $(document).ready(function () {
           },
           options: {
             responsive: true,
-            title: {
-              display: false,
-              text: range.months + " Monate",
+            plugins: {
+              title: {
+                display: false,
+                text: range.months + " Monate",
+              },
             },
             scales: {
-              xAxes: [
-                {
+              x: {
+                display: true,
+                title: {
                   display: true,
-                  scaleLabel: {
-                    display: true,
-                    labelString: "Monat",
-                  },
+                  text: "Monat",
                 },
-              ],
-              yAxes: [
-                {
+              },
+              y: {
+                display: true,
+                suggestedMin: min * 0.95,
+                suggestedMax: max * 1.05,
+                title: {
                   display: true,
-                  ticks: {
-                    suggestedMin: min * 0.95,
-                    suggestedMax: max * 1.05,
-                  },
-                  scaleLabel: {
-                    display: true,
-                    labelString: "Schuldenstand",
-                  },
+                  text: "Schuldenstand",
                 },
-              ],
+              },
             },
           },
         });
@@ -368,9 +352,14 @@ $(document).ready(function () {
   };
 
   $("#by-region").click(function (evt) {
-    var activePoints = byRegionChart.getElementsAtEvent(evt);
+    var activePoints = byRegionChart.getElementsAtEventForMode(
+      evt,
+      "nearest",
+      { intersect: true },
+      false
+    );
     if (activePoints && activePoints.length > 0) {
-      var label = byRegionChart.data.labels[activePoints[0]._index];
+      var label = byRegionChart.data.labels[activePoints[0].index];
       var description = "PLZ (" + label.split(" ")[0] + ")";
       $("#by-region-level").text(description);
       byRegionURL = _url("/statistics/byregion/zip-" + label.split(" ")[0]);
