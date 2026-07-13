@@ -9,7 +9,7 @@ const models = require("../models");
 const utils = require("../utils");
 const email = require("../utils/email");
 const bcrypt = require("bcrypt");
-const archiver = require("archiver");
+const { ZipArchive } = require("archiver");
 
 module.exports = function (app) {
   router.get("/projectconfig", function (req, res, next) {
@@ -351,7 +351,7 @@ module.exports = function (app) {
           admin: results[3],
           file: results[4],
         };
-        var archive = archiver("zip", { zlib: { level: 9 } });
+        var archive = new ZipArchive({ zlib: { level: 9 } });
         res.setHeader("Content-Type", "application/zip");
         res.setHeader(
           "Content-Disposition",

@@ -1,5 +1,5 @@
 /* jshint esversion: 8 */
-const archiver = require("archiver");
+const { ZipArchive } = require("archiver");
 const security = require("../utils/security");
 const moment = require("moment");
 const statistics = require("../utils/statistics");
@@ -409,7 +409,7 @@ module.exports = function (app) {
               },
             })
             .then((templates) => {
-              var archive = archiver("zip");
+              var archive = new ZipArchive();
               res.setHeader("Content-Type", "application/zip");
               res.setHeader(
                 "Content-Disposition",
