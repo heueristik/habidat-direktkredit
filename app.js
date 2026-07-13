@@ -17,8 +17,8 @@ try {
   const utils = require("./utils");
   const settings = require("./utils/settings");
 
-  mkdirp("tmp", function (err) {});
-  mkdirp("upload", function (err) {});
+  mkdirp.sync("tmp");
+  mkdirp.sync("upload");
 
   var models = require("./models");
 
