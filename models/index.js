@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const Sequelize = require("sequelize");
 const settings = require("../utils/settings");
-const Umzug = require("umzug");
+const { Umzug, SequelizeStorage } = require("umzug");
 const tracker = require("../utils/tracker");
 const config = require("../config/config.json");
 const bcrypt = require("bcrypt");
@@ -75,16 +75,22 @@ var createdb = function () {
   });
 
   // create database structure or applying pending database modifications
+  const queryInterface = sequelize.getQueryInterface();
   const umzug = new Umzug({
     migrations: {
-      path: path.join(__dirname, "./migrations"),
-      params: [sequelize.getQueryInterface()],
+      glob: ["*.js", { cwd: path.join(__dirname, "migrations") }],
+      resolve: ({ name }) => {
+        const migration = require(path.join(__dirname, "migrations", name));
+        return {
+          name,
+          up: () => migration.up(queryInterface),
+          down: () => migration.down(queryInterface),
+        };
+      },
     },
-    storage: "sequelize",
-    storageOptions: {
-      sequelize: sequelize,
-    },
-    logging: console.log,
+    context: queryInterface,
+    storage: new SequelizeStorage({ sequelize: sequelize }),
+    logger: console,
   });
 
   umzug
